@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {AuthService} from '../auth.service';
-
+import { AuthService } from '../auth.service';
 
 @Component({
   standalone: true,
@@ -20,11 +19,12 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onLogin() {
-    const success = this.authService.login(this.username, this.password);
-    if (success) {
-      this.router.navigateByUrl('/'); // puedes cambiarlo a /dashboard más adelante
-    } else {
-      this.errorMessage = 'Credenciales inválidas';
-    }
+    this.authService.login(this.username, this.password).subscribe(success => {
+      if (success) {
+        this.router.navigateByUrl('/dashboard'); // redirección segura tras login
+      } else {
+        this.errorMessage = 'Credenciales inválidas';
+      }
+    });
   }
 }

@@ -1,0 +1,28 @@
+<div class="config-container">
+  <h2>⚙️ Configuración del Bono</h2>
+
+  <label>Moneda:</label>
+  <select [(ngModel)]="moneda">
+    <option value="PEN">Soles (PEN)</option>
+    <option value="USD">Dólares (USD)</option>
+    <option value="EUR">Euros (EUR)</option>
+  </select>
+
+  <label>Tipo de tasa:</label>
+  <select [(ngModel)]="tipoTasa">
+    <option value="efectiva">Efectiva</option>
+    <option value="nominal">Nominal</option>
+  </select>
+
+  <div *ngIf="tipoTasa === 'nominal'">
+    <label>Capitalización:</label>
+    <select [(ngModel)]="capitalizacion">
+      <option value="anual">Anual</option>
+      <option value="semestral">Semestral</option>
+      <option value="trimestral">Trimestral</option>
+      <option value="mensual">Mensual</option>
+    </select>
+  </div>
+
+  <button (click)="guardar()">Guardar configuración</button>
+</div>

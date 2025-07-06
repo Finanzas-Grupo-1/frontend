@@ -1,0 +1,50 @@
+.dashboard-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: Arial, sans-serif;
+}
+
+.intro-text {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.resumen-seccion h3 {
+  color: #4a148c;
+  margin-bottom: 0.75rem;
+}
+
+.resumen-seccion ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.resumen-seccion li {
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.acciones {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.acciones button {
+  background-color: #4a148c;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.acciones button:hover {
+  background-color: #6a1b9a;
+}

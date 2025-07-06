@@ -1,1 +1,41 @@
-<p>register works!</p>
+<div class="register-container">
+  <img src="assets/images/bond-icon.svg" alt="Bono Icono" class="register-icon" />
+
+  <h2>Crear Cuenta</h2>
+  <p class="register-subtitle">Regístrate para gestionar bonos americanos</p>
+
+  <form (ngSubmit)="onRegister()">
+    <input
+      type="text"
+      [(ngModel)]="username"
+      name="username"
+      placeholder="Usuario"
+      required
+    />
+    <input
+      type="email"
+      [(ngModel)]="email"
+      name="email"
+      placeholder="Correo electrónico"
+      required
+    />
+    <input
+      type="password"
+      [(ngModel)]="password"
+      name="password"
+      placeholder="Contraseña"
+      required
+    />
+    <input
+      type="password"
+      [(ngModel)]="confirmPassword"
+      name="confirmPassword"
+      placeholder="Confirmar contraseña"
+      required
+    />
+    <button type="submit">Registrarse</button>
+  </form>
+
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+</div>

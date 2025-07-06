@@ -1,1 +1,75 @@
 /* You can add global styles to this file, and also import other style files */
+/* === Tipografía y color === */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  background-color: #f4f6f8; /* fondo gris claro, financiero */
+  color: #333;
+}
+
+/* === Estilo para títulos generales === */
+h1, h2, h3 {
+  color: #2c2c3e; /* tono profesional oscuro */
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+/* === Estilo general para inputs === */
+input, button {
+  font-size: 1rem;
+}
+
+/* === Estilo global de formularios === */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* === Botones === */
+button {
+  background-color: #4a148c; /* púrpura sobrio */
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #6a1b9a;
+}
+
+/* === Tablas === */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+}
+
+th, td {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+th {
+  background-color: #e1bee7;
+  color: #2c2c3e;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* === Contenedor central === */
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}

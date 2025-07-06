@@ -1,0 +1,16 @@
+<nav class="navbar">
+  <div class="navbar-brand">📈 Bonos Americanos</div>
+
+  <div class="navbar-links">
+
+    <ng-container *ngIf="authService.isLoggedIn(); else publicLinks">
+      <a routerLink="/dashboard">Dashboard</a>
+      <a (click)="logout()">Cerrar sesión</a>
+    </ng-container>
+
+    <ng-template #publicLinks>
+      <a routerLink="/login">Iniciar sesión</a>
+      <a routerLink="/register">Registrarse</a>
+    </ng-template>
+  </div>
+</nav>
