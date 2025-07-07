@@ -22,6 +22,7 @@ export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onRegister() {
+    console.log('Se hizo clic en Registrar');
     if (this.password !== this.confirmPassword) {
       this.errorMessage = 'Las contraseñas no coinciden';
       this.successMessage = '';
