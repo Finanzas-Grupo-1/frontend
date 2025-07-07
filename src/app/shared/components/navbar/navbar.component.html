@@ -5,6 +5,8 @@
 
     <ng-container *ngIf="authService.isLoggedIn(); else publicLinks">
       <a routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/bonohistorial">Historial</a>
+      <a routerLink="/configuracion">Configuraciones</a>
       <a (click)="logout()">Cerrar sesión</a>
     </ng-container>
 

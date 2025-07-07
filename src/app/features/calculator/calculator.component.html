@@ -4,57 +4,58 @@
   <form (ngSubmit)="calcular()">
     <label>
       Nombre del bono:
-      <input [(ngModel)]="bono.name" name="name" required />
+      <input [(ngModel)]="name" name="name" required />
     </label>
 
     <label>
       Valor nominal:
-      <input type="number" [(ngModel)]="bono.nominalValue" name="nominalValue" required />
+      <input type="number" [(ngModel)]="nominalValue" name="nominalValue" required />
     </label>
 
     <label>
       Valor comercial:
-      <input type="number" [(ngModel)]="bono.commercialValue" name="commercialValue" required />
+      <input type="number" [(ngModel)]="commercialValue" name="commercialValue" required />
     </label>
 
     <label>
       Años de duración:
-      <input type="number" [(ngModel)]="bono.years" name="years" required />
+      <input type="number" [(ngModel)]="years" name="years" required />
     </label>
 
     <label>
       Pagos por año:
-      <input type="number" [(ngModel)]="bono.paymentsPerYear" name="paymentsPerYear" required />
+      <input type="number" [(ngModel)]="paymentsPerYear" name="paymentsPerYear" required />
     </label>
 
     <label>
       Tasa de cupón (%):
-      <input type="number" step="0.01" [(ngModel)]="bono.couponRate" name="couponRate" required />
+      <input type="number" step="0.01" [(ngModel)]="couponRate" name="couponRate" required />
     </label>
 
     <label>
       Prima de redención (%):
-      <input type="number" step="0.01" [(ngModel)]="bono.redemptionPremium" name="redemptionPremium" />
+      <input type="number" step="0.01" [(ngModel)]="redemptionPremium" name="redemptionPremium" />
     </label>
 
+    <!-- ✅ Se carga desde configuración -->
     <label>
       ¿Tasa efectiva?
-      <input type="checkbox" [(ngModel)]="bono.isEffectiveRate" name="isEffectiveRate" />
+      <input type="checkbox" [(ngModel)]="isEffectiveRate" name="isEffectiveRate" />
     </label>
 
-    <label *ngIf="!bono.isEffectiveRate">
+    <label *ngIf="!isEffectiveRate">
       Tasa nominal (%):
-      <input type="number" step="0.01" [(ngModel)]="bono.nominalRate" name="nominalRate" />
+      <input type="number" step="0.01" [(ngModel)]="nominalRate" name="nominalRate" />
     </label>
 
-    <label *ngIf="!bono.isEffectiveRate">
+    <label *ngIf="!isEffectiveRate">
       Días de capitalización:
-      <input type="number" [(ngModel)]="bono.capitalizationDays" name="capitalizationDays" />
+      <input type="number" [(ngModel)]="capitalizationDays" name="capitalizationDays" />
     </label>
 
     <label>
       Moneda:
-      <select [(ngModel)]="bono.currency" name="currency">
+      <select [(ngModel)]="currency" name="currency">
         <option value="PEN">Soles (PEN)</option>
         <option value="USD">Dólares (USD)</option>
       </select>
@@ -62,42 +63,42 @@
 
     <label>
       Costo estructuración (%):
-      <input type="number" step="0.01" [(ngModel)]="bono.structuringCost" name="structuringCost" />
+      <input type="number" step="0.01" [(ngModel)]="structuringCost" name="structuringCost" />
     </label>
 
     <label>
       Costo colocación (%):
-      <input type="number" step="0.01" [(ngModel)]="bono.placementCost" name="placementCost" />
+      <input type="number" step="0.01" [(ngModel)]="placementCost" name="placementCost" />
     </label>
 
     <label>
       Costo flotación (%):
-      <input type="number" step="0.01" [(ngModel)]="bono.flotationCost" name="flotationCost" />
+      <input type="number" step="0.01" [(ngModel)]="flotationCost" name="flotationCost" />
     </label>
 
     <label>
       Costo Cavali (%):
-      <input type="number" step="0.01" [(ngModel)]="bono.cavaliCost" name="cavaliCost" />
+      <input type="number" step="0.01" [(ngModel)]="cavaliCost" name="cavaliCost" />
     </label>
 
     <label>
       Periodos de gracia total:
-      <input type="number" [(ngModel)]="bono.totalGracePeriods" name="totalGracePeriods" />
+      <input type="number" [(ngModel)]="totalGracePeriods" name="totalGracePeriods" />
     </label>
 
     <label>
       Periodos de gracia parcial:
-      <input type="number" [(ngModel)]="bono.partialGracePeriods" name="partialGracePeriods" />
+      <input type="number" [(ngModel)]="partialGracePeriods" name="partialGracePeriods" />
     </label>
 
     <label>
       Tasa de mercado (%):
-      <input type="number" step="0.01" [(ngModel)]="bono.marketRate" name="marketRate" />
+      <input type="number" step="0.01" [(ngModel)]="marketRate" name="marketRate" />
     </label>
 
     <label>
       Fecha de inicio:
-      <input type="date" [(ngModel)]="bono.startDate" name="startDate" />
+      <input type="date" [(ngModel)]="startDate" name="startDate" />
     </label>
 
     <button type="submit">Calcular</button>
@@ -120,10 +121,10 @@
       <tr *ngFor="let row of cashFlows">
         <td>{{ row.period }}</td>
         <td>{{ row.paymentDate | date }}</td>
-        <td>{{ row.interest | currency: bono.currency }}</td>
-        <td>{{ row.amortization | currency: bono.currency }}</td>
-        <td>{{ row.totalPayment | currency: bono.currency }}</td>
-        <td>{{ row.remainingDebt | currency: bono.currency }}</td>
+        <td>{{ row.interest | currency: currency }}</td>
+        <td>{{ row.amortization | currency: currency }}</td>
+        <td>{{ row.totalPayment | currency: currency }}</td>
+        <td>{{ row.remainingDebt | currency: currency }}</td>
       </tr>
       </tbody>
     </table>

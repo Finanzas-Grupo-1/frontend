@@ -13,7 +13,7 @@ export interface CashFlow {
 
 export interface BonoInput {
   name: string;
-  userId?: number; // opcional por ahora
+  userId?: number;
   nominalValue: number;
   commercialValue: number;
   years: number;
@@ -36,15 +36,21 @@ export interface BonoInput {
 
 @Injectable({ providedIn: 'root' })
 export class CalculatorService {
-  private apiUrl = 'http://localhost:3000/api/calcular-bono'; // cambiar cuando el backend esté disponible
+  private apiUrl = 'http://localhost:3000/api/calcular-bono'; // backend real en el futuro
 
   constructor(private http: HttpClient) {}
 
   enviarDatosCalculo(data: BonoInput): Observable<{ success: boolean; cashFlows: CashFlow[] }> {
-    // 🔄 Simulado por ahora: reemplaza por esta línea cuando conectes al backend:
-    // return this.http.post<{ success: boolean; cashFlows: CashFlow[] }>(this.apiUrl, data);
-
     const cashFlows: CashFlow[] = this.generarAmortizacionLocal(data);
+
+    const resumen = {
+      ...data,
+      name: data.name || `Bono generado ${new Date().toLocaleDateString()}`,
+      fechaRegistro: new Date().toISOString(),
+    };
+
+    this.guardarEnHistorial({ ...resumen, cashFlows });
+
     return of({ success: true, cashFlows });
   }
 
@@ -76,5 +82,30 @@ export class CalculatorService {
     }
 
     return flows;
+  }
+
+  // ✅ Obtener historial completo
+  getHistorial(): any[] {
+    return JSON.parse(localStorage.getItem('bonosHistorial') || '[]');
+  }
+
+  // ✅ Guardar nuevo bono
+  private guardarEnHistorial(bono: any) {
+    const historial = this.getHistorial();
+    historial.push(bono);
+    localStorage.setItem('bonosHistorial', JSON.stringify(historial));
+  }
+
+  // ✅ Eliminar bono específico
+  eliminarBono(bonoAEliminar: any) {
+    const historial = this.getHistorial().filter(
+      b => b.name !== bonoAEliminar.name || b.fechaRegistro !== bonoAEliminar.fechaRegistro
+    );
+    localStorage.setItem('bonosHistorial', JSON.stringify(historial));
+  }
+
+  // ✅ Limpiar historial completo
+  limpiarHistorial() {
+    localStorage.removeItem('bonosHistorial');
   }
 }

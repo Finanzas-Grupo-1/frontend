@@ -14,6 +14,14 @@ export const routes: Routes = [
   {
     path: 'configuracion',
     loadComponent: () => import('./configuration/configuration.component').then(m => m.ConfigurationComponent)
+  },
+  {
+    path: 'bonohistorial',
+    loadComponent: () => import('./features/bono-history/bono-history.component').then(m => m.BonoHistoryComponent)
+  },
+  {
+    path: 'calculator/:id',
+    loadComponent: () =>
+      import('./features/calculator/calculator.component').then(m => m.CalculatorComponent)
   }
-
 ];
