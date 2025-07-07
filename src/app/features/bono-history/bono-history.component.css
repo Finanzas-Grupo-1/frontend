@@ -73,6 +73,17 @@ mat-expansion-panel {
   background-color: var(--subtable-header, #ececf4);
   color: #333;
 }
+.sub-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.sub-table th, .sub-table td {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  text-align: center;
+}
 
 .sub-table tr:nth-child(even) {
   background-color: #f2f2f2;

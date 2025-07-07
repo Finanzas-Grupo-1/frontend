@@ -1,6 +1,9 @@
 <div class="history-container">
   <h2>📄 Historial de Bonos</h2>
   <button mat-stroked-button color="warn" (click)="eliminarTodo()">🗑️ Eliminar Todo</button>
+  <div *ngIf="bonos.length === 0" style="text-align:center; margin-top: 2rem;">
+    <p>No hay bonos registrados aún 📭</p>
+  </div>
 
   <table mat-table [dataSource]="bonos" multiTemplateDataRows class="mat-elevation-z2">
     <!-- Expander -->
@@ -29,6 +32,17 @@
     <ng-container matColumnDef="years">
       <th mat-header-cell *matHeaderCellDef>Años</th>
       <td mat-cell *matCellDef="let bono">{{ bono.years }}</td>
+    </ng-container>
+    <!-- TCEA -->
+    <ng-container matColumnDef="tcea">
+      <th mat-header-cell *matHeaderCellDef>TCEA</th>
+      <td mat-cell *matCellDef="let bono">{{ bono.tcea | number:'1.2-2' }}%</td>
+    </ng-container>
+
+    <!-- Duración -->
+    <ng-container matColumnDef="duration">
+      <th mat-header-cell *matHeaderCellDef>Duración</th>
+      <td mat-cell *matCellDef="let bono">{{ bono.duration | number:'1.2-2' }}</td>
     </ng-container>
 
     <!-- Cupon -->

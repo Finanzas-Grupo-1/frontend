@@ -5,26 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { BonoService, BondResource } from './bono.service';
+import { HttpHeaders } from '@angular/common/http';
+import { CalculatorService } from '../calculator/calculator.service';
 
-interface CashFlow {
-  period: number;
-  paymentDate: string;
-  interest: number;
-  amortization: number;
-  totalPayment: number;
-  remainingDebt: number;
-}
-
-interface Bono {
-  id: number;
-  name: string;
-  currency: string;
-  years: number;
-  couponRate: number;
-  marketRate: number;
-  startDate: string;
-  cashFlows: CashFlow[];
-}
 
 @Component({
   standalone: true,
@@ -36,46 +21,75 @@ interface Bono {
     MatButtonModule,
     MatExpansionModule
   ],
+  providers:[JwtHelperService],
   templateUrl: './bono-history.component.html',
   styleUrls: ['./bono-history.component.css']
 })
 export class BonoHistoryComponent implements OnInit {
-  displayedColumns: string[] = ['expand', 'name', 'currency', 'years', 'couponRate', 'marketRate', 'startDate', 'actions'];
-  bonos: Bono[] = [];
-
+  displayedColumns: string[] = [
+    'expand', 'name', 'currency', 'years',
+    'couponRate', 'marketRate', 'tcea', 'duration',
+    'startDate', 'actions'
+  ];
+  bonos: BondResource[] = [];
   expandedBono: number | null = null;
+  userId!: number;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private bonoService: BonoService,
+    private jwtHelper: JwtHelperService,
+    private calculatorService: CalculatorService
+  ) {}
 
   ngOnInit(): void {
-    // 🔄 Cargar desde localStorage por ahora
-    const raw = localStorage.getItem('bonosHistorial');
-    this.bonos = raw ? JSON.parse(raw) : [];
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      const decoded = this.jwtHelper.decodeToken(token);
+      console.log('[🎫 JWT DECODIFICADO]', decoded); // <--- Aquí
 
-    // ⚙️ Preparado para uso futuro con backend
-    // this.bonoService.getBonosByUser(userId).subscribe(data => {
-    //   this.bonos = data;
-    // });
+      this.userId =
+        decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid']
+          ? parseInt(decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid'])
+          : 0;      console.log('[🧍 userId en frontend]', this.userId);
+      this.userId =
+        decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid']
+          ? parseInt(decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid'])
+          : 0;      console.log('UserID decodificado:', this.userId);
+
+      if (this.userId) {
+        this.bonoService.getHistorial(this.userId).subscribe({
+          next: (bonos: BondResource[]) => {
+            console.log('Bonos obtenidos:', bonos);
+            this.bonos = bonos;
+          },
+          error: (err: any) => console.error('Error al obtener bonos:', err)
+        });
+      }
+    } else {
+      console.warn('No hay token en localStorage');
+    }
   }
+
 
   toggleExpand(bonoId: number): void {
     this.expandedBono = this.expandedBono === bonoId ? null : bonoId;
   }
 
   eliminarBono(id: number): void {
-    this.bonos = this.bonos.filter(b => b.id !== id);
-    localStorage.setItem('bonosHistorial', JSON.stringify(this.bonos));
-
-    // Si el que se expandía fue eliminado, se resetea la expansión
-    if (this.expandedBono === id) {
-      this.expandedBono = null;
-    }
+    this.bonoService.eliminarBono(id).subscribe(() => {
+      this.bonos = this.bonos.filter(b => b.id !== id);
+      if (this.expandedBono === id) {
+        this.expandedBono = null;
+      }
+    });
   }
 
   eliminarTodo(): void {
-    this.bonos = [];
-    this.expandedBono = null;
-    localStorage.removeItem('bonosHistorial');
+    this.bonoService.eliminarTodos(this.userId).subscribe(() => {
+      this.bonos = [];
+      this.expandedBono = null;
+    });
   }
 
   editarBono(id: number): void {

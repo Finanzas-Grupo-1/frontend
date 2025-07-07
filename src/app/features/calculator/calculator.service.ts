@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface CashFlow {
   period: number;
@@ -34,78 +35,96 @@ export interface BonoInput {
   startDate: string;
 }
 
+export interface BondResource {
+  id: number;
+  userId: number;
+  name: string;
+  nominalValue: number;
+  commercialValue: number;
+  years: number;
+  paymentsPerYear: number;
+  couponRate: number;
+  redemptionPremium: number;
+  isEffectiveRate: boolean;
+  nominalRate?: number;
+  capitalizationDays?: number;
+  currency: string;
+  structuringCost: number;
+  placementCost: number;
+  flotationCost: number;
+  cavaliCost: number;
+  totalGracePeriods: number;
+  partialGracePeriods: number;
+  marketRate: number;
+  tcea?: number;
+  trea?: number;
+  duration?: number;
+  modifiedDuration?: number;
+  convexity?: number;
+  maxPrice?: number;
+  startDate: string;
+  cashFlows: CashFlow[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class CalculatorService {
-  private apiUrl = 'http://localhost:3000/api/calcular-bono'; // backend real en el futuro
+  private apiUrl = 'https://localhost:7062/api/v1/bonuses';
 
   constructor(private http: HttpClient) {}
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('accessToken');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
   enviarDatosCalculo(data: BonoInput): Observable<{ success: boolean; cashFlows: CashFlow[] }> {
-    const cashFlows: CashFlow[] = this.generarAmortizacionLocal(data);
-
-    const resumen = {
-      ...data,
-      name: data.name || `Bono generado ${new Date().toLocaleDateString()}`,
-      fechaRegistro: new Date().toISOString(),
-    };
-
-    this.guardarEnHistorial({ ...resumen, cashFlows });
-
-    return of({ success: true, cashFlows });
-  }
-
-  private generarAmortizacionLocal(input: BonoInput): CashFlow[] {
-    const flows: CashFlow[] = [];
-    const totalPeriods = input.years * input.paymentsPerYear;
-    const nominal = input.nominalValue;
-    const coupon = input.couponRate / input.paymentsPerYear;
-    const interestPayment = nominal * coupon;
-
-    for (let i = 1; i <= totalPeriods; i++) {
-      const isPartialGrace = i <= input.partialGracePeriods;
-      const isTotalGrace = i <= input.totalGracePeriods;
-
-      const interest = isTotalGrace ? 0 : interestPayment;
-      const amortization = i === totalPeriods ? nominal * (1 + input.redemptionPremium) : 0;
-
-      const paymentDate = new Date(input.startDate);
-      paymentDate.setMonth(paymentDate.getMonth() + (12 / input.paymentsPerYear) * i);
-
-      flows.push({
-        period: i,
-        paymentDate: paymentDate.toISOString().split('T')[0],
-        interest: parseFloat(interest.toFixed(2)),
-        amortization: parseFloat(amortization.toFixed(2)),
-        totalPayment: parseFloat((interest + amortization).toFixed(2)),
-        remainingDebt: i === totalPeriods ? 0 : nominal * (1 + input.redemptionPremium)
-      });
-    }
-
-    return flows;
-  }
-
-  // ✅ Obtener historial completo
-  getHistorial(): any[] {
-    return JSON.parse(localStorage.getItem('bonosHistorial') || '[]');
-  }
-
-  // ✅ Guardar nuevo bono
-  private guardarEnHistorial(bono: any) {
-    const historial = this.getHistorial();
-    historial.push(bono);
-    localStorage.setItem('bonosHistorial', JSON.stringify(historial));
-  }
-
-  // ✅ Eliminar bono específico
-  eliminarBono(bonoAEliminar: any) {
-    const historial = this.getHistorial().filter(
-      b => b.name !== bonoAEliminar.name || b.fechaRegistro !== bonoAEliminar.fechaRegistro
+    return this.http.post<BondResource>(this.apiUrl, data, { headers: this.getHeaders() }).pipe(
+      map((response) => ({
+        success: true,
+        cashFlows: response.cashFlows
+      }))
     );
-    localStorage.setItem('bonosHistorial', JSON.stringify(historial));
   }
 
-  // ✅ Limpiar historial completo
-  limpiarHistorial() {
-    localStorage.removeItem('bonosHistorial');
+  getHistorialDesdeBackend(userId: number): Observable<BondResource[]> {
+    return this.http.get<BondResource[]>(`${this.apiUrl}/user/${userId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  eliminarBonoDesdeBackend(bondId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${bondId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  limpiarHistorialDesdeBackend(userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/user/${userId}/all`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  calcularBono(bono: Partial<BondResource>): Observable<BondResource> {
+    return this.http.post<BondResource>(`${this.apiUrl}/calculate`, bono, {
+      headers: this.getHeaders()
+    });
+  }
+
+  guardarBono(bono: Partial<BondResource>): Observable<BondResource> {
+    return this.http.post<BondResource>(`${this.apiUrl}`, bono, {
+      headers: this.getHeaders()
+    });
+  }
+
+  obtenerBonoPorId(id: number): Observable<BondResource> {
+    return this.http.get<BondResource>(`${this.apiUrl}/${id}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  actualizarBono(id: number, bono: Partial<BondResource>): Observable<BondResource> {
+    return this.http.put<BondResource>(`${this.apiUrl}/${id}`, bono, {
+      headers: this.getHeaders()
+    });
   }
 }

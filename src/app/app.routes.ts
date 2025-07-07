@@ -9,19 +9,22 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   { path: 'calculator', component: CalculatorComponent, canActivate: [AuthGuard] },
   {
     path: 'configuracion',
-    loadComponent: () => import('./configuration/configuration.component').then(m => m.ConfigurationComponent)
+    loadComponent: () => import('./configuration/configuration.component').then(m => m.ConfigurationComponent),
+    canActivate: [AuthGuard]
   },
   {
     path: 'bonohistorial',
-    loadComponent: () => import('./features/bono-history/bono-history.component').then(m => m.BonoHistoryComponent)
+    loadComponent: () => import('./features/bono-history/bono-history.component').then(m => m.BonoHistoryComponent),
+    canActivate: [AuthGuard]
   },
   {
     path: 'calculator/:id',
     loadComponent: () =>
-      import('./features/calculator/calculator.component').then(m => m.CalculatorComponent)
+      import('./features/calculator/calculator.component').then(m => m.CalculatorComponent),
+    canActivate: [AuthGuard]
   }
 ];

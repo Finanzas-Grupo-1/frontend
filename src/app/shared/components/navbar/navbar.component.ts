@@ -16,6 +16,12 @@ export class NavbarComponent {
 
   logout() {
     this.authService.logout();
+    alert('Sesión cerrada con éxito');
     this.router.navigateByUrl('/login');
   }
+
+  logClick(origen: string): void {
+    console.log(`[NAVBAR] Click en: ${origen}`);
+  }
+
 }
